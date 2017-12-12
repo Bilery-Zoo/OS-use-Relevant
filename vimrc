@@ -1,7 +1,7 @@
 " show row number
 set nu
 " set autoindent
-set auto indent
+set autoindent
 " set highlight search
 set hlsearch
 " set Tab stop
