@@ -1,5 +1,7 @@
 " show row number
 set nu
+" set paste
+set paste
 " set autoindent
 set autoindent
 " set highlight search
