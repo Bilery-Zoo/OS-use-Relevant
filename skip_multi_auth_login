@@ -1,0 +1,67 @@
+#!/usr/bin/env expect
+# author    : Bilery Zoo(bilery.zoo@gmail.com)
+# create_ts : 2020-01-01
+# program   : skip multi authentication(Google Authenticator) to login a server
+
+
+# **********************************************************************************************************************
+#
+#            　　 　 　　　　 　 |＼＿/|
+#            　　 　 　　　　 　 | ・x・ |
+#            　　 ＼＿＿＿＿＿／　　　 |
+#            　　 　 |　　　 　　　　　|    ニャンー ニャンー
+#            　　　　＼　　　　　 　ノ　
+#            　（（（　(/￣￣￣￣(/ヽ)
+#
+#    1.About Requirement
+# This script relays on OS program of `expect` and Python package of `pyotp`, thanks to the open source developers.
+# See also:
+#    https://core.tcl-lang.org/expect/home
+#    https://github.com/pyauth/pyotp
+# You can easily install `expect` by
+#        > yum install expect
+# on rpm series OS and
+#        > apt install expect
+# on deb series OS.
+# To install `pyotp` please
+#        > pip install pyotp
+#
+#    2.About Deployment
+# Append execution privilege
+#        > chmod +x skip_multi_auth_login
+# Easily call(option)
+#        > alias skipper='skip_multi_auth_login'
+# Or additional(option)
+#        > echo -e "# skipper alias\nalias skipper='skip_multi_auth_login'\n" >> /etc/profile
+#        > source /etc/profile
+#
+#    3.About Variable
+# HOST
+#    server host
+# USER
+#    login user
+# PASSWORD
+#    login password
+# GOOGLEKEY
+#    your google key
+# You NEED to REPLACE each of these variables at codes into yours to execute this script. For example:
+#    replace `set host HOST` into `set host 127.0.0.1`
+#
+# **********************************************************************************************************************
+
+
+set host HOST
+set user USER
+set password PASSWORD
+set googlekey [ exec /usr/bin/env python -c "import pyotp; print(pyotp.TOTP(\"GOOGLEKEY\").now())" ]
+set timeout 3
+
+
+spawn ssh $user@$host
+expect "yes/no" {
+	send "yes\n";
+	exp_continue
+}
+expect "Verification" { send "$googlekey\n" }
+expect "Password" { send "$password\n" }
+interact
